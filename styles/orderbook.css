@@ -1,0 +1,9 @@
+.fd-orderbook {
+    @media (min-height: 567px) and (min-width: 768px) {
+        height: 100% !important;
+    }
+}
+
+.fd-table-background--reverse {
+    flex-direction: column !important;
+}
