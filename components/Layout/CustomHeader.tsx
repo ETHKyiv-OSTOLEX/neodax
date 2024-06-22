@@ -30,7 +30,7 @@ export const AppHeader: FC<CustomHeaderProps> = ({ options, headerLogoIcon, show
 
     return (
         <header className="w-full flex justify-between px-[18px] md:px-6 lg:px-9 py-2.5 bg-navbar-background-color">
-            <Link className="h-11 w-32 cursor-pointer block" href="/" onClick={logoClickHandler}>
+            <Link className="h-11 w-32 cursor-iointer block" href="/" onClick={logoClickHandler}>
                 {headerLogoIcon}
             </Link>
             <ClearportAccount
