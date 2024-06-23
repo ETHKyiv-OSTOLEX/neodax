@@ -1,80 +1,69 @@
-import { TickerCard } from "@openware/neodax-web-sdk";
 import {LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Cell, Legend, Line, PieChart, Pie } from "recharts";
+import { ArrowUpRight } from 'lucide-react';
 
-function Ticker() {
+function Ticker({ tickerName, shortTickerName, price, percent }: { tickerName: string, shortTickerName: string, price: number, percent: number }) {
   return (
-    <TickerCard market={{
-      "id": "duckiesusd",
-      "name": "DUCKIES/USD",
-      "type": "spot",
-      "base_unit": "duckies",
-      "quote_unit": "usd",
-      "amount_precision": 8,
-      "price_precision": 8
-    }} tickers={{
-      "duckiesusd": {
-        "name": "duckiesusd",
-        "at": 1718102593,
-        "min": "0.6057875601785985",
-        "max": "0.6437027104065439",
-        "open": "0.6437027104065439",
-        "last": "0.6265928885152772",
-        "volume": "78606193.43999986",
-        "amount": "48947855.082822464",
-        "vwap": "0.6226971812365444",
-        "price_change_percent": "2.6495943105654054"
-      }
-    }} handleDragEnter={() => {}} handleDragEnd={() => {}} handleDrag={() => {}} />
-  )
+    <div className="flex flex-col bg-white gap-4 text-black p-6 rounded-lg shadow-lg border border-gray-200 w-64">
+      <div className="flex items-center justify-center bg-green-500 rounded-full w-16 h-16">
+        <ArrowUpRight color="white" size={24} />
+      </div>
+      <div className="flex gap-2 items-center">
+        <p className="text-xl font-bold">{tickerName}</p>
+        <p className="text-sm text-gray-500">{shortTickerName}</p>
+      </div>
+      <div className="flex gap-3 items-center">
+      <p className="text-2xl font-bold">{price}$</p>
+      <p className="text-green-600">+{percent}%</p>
+      </div>
+    </div>
+  );
 }
 
 const data = [
   {
-    "name": "Page A",
+    "name": "21.06.2024",
     "pv": 700,
     "amt": 2400
   },
   {
-    "name": "Page C",
+    "name": "22.06.2024",
     "pv": 900,
     "amt": 2290
   },
   {
-    "name": "Page D",
+    "name": "23.06.2024",
     "pv": 800,
     "amt": 2000
   },
   {
-    "name": "Page E",
+    "name": "24.06.2024",
     "pv": 1200,
     "amt": 2181
   },
   {
-    "name": "Page F",
+    "name": "25.06.2024",
     "pv": 1000,
     "amt": 2500
   },
   {
-    "name": "Page G",
+    "name": "26.06.2024",
     "pv": 1400,
     "amt": 2100
   }
 ]
 
 const data01 = [
-  { name: 'Group A', value: 400 },
-  { name: 'Group B', value: 300 },
-  { name: 'Group C', value: 300 },
-  { name: 'Group D', value: 200 },
-  { name: 'Group E', value: 278 },
-  { name: 'Group F', value: 189 },
+  { name: 'ETH', value: 40 },
+  { name: 'BTC', value: 30 },
+  { name: 'YELLOW', value: 20 },
+  { name: 'DUCKIES', value: 10 },
 ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['#716B94', '#F7931A', '#FFBB28', '#FF8042'];
 
 export default function ETFStats() {
   return (
-    <div className="flex min-h-full flex-col bg-gray-100 gap-8 text-black p-8">
+    <div className="flex min-h-full flex-col bg-gray-100 gap-12 text-black p-8">
       <div className="flex flex-col gap-2">
         <span className="text-4xl font-bold">
           Serj ETF
@@ -91,9 +80,9 @@ export default function ETFStats() {
           <Line type="monotone" dataKey="pv" stroke="#82ca9d" strokeWidth={2} dot={false} activeDot={{ r: 8 }} />
         </LineChart>
       </div>
-      <div className="flex gap-4 w-full justify-between">
-        <PieChart width={730} height={250}>
-          <Pie data={data01} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
+      <div className="flex gap-4 w-full items-center justify-between">
+        <PieChart width={530} height={350}>
+          <Pie data={data01} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={125} fill="#8884d8" label>
             {
               data01.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -104,11 +93,13 @@ export default function ETFStats() {
           <Legend />
         </PieChart>
 
-        <div className="flex w-1/2 gap-3 flex-col">
-          <Ticker />
-          <Ticker />
-          <Ticker />
-          <Ticker />
+        <div className="flex w-1/2 justify-center">
+        <div className="grid grid-cols-2 gap-3">
+          <Ticker tickerName="Ethereum" shortTickerName="ETH" price={42} percent={13} />
+          <Ticker tickerName="Bitcoin" shortTickerName="BTC" price={37} percent={17} />
+          <Ticker tickerName="Yellow" shortTickerName="YELLOW" price={21} percent={10} />
+          <Ticker tickerName="Duckies" shortTickerName="DUCKIES" price={8} percent={12} />
+        </div>
         </div>
       </div>
       <div className="flex gap-4 self-center">
