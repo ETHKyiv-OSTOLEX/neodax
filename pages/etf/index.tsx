@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import Link from 'next/link';
-import { Dropdown, SearchBar } from "@openware/neodax-web-sdk";
+import { Dropdown, SearchBar, useSmartAccountContext } from "@openware/neodax-web-sdk";
 import {TrendingUp} from "lucide-react";
 
 function ETFCard({name, amount, growthPercentage}: {name: string, amount: number, growthPercentage: number}) {
@@ -25,8 +26,60 @@ function ETFCard({name, amount, growthPercentage}: {name: string, amount: number
   );
 }
 
-
 export default function ETFHome() {
+  const {
+    smartAccount,
+    kernelAccount,
+    smartAccountProvider: provider,
+    privyBundler: bundlerClient,
+    viemPublicClient, // publicClient
+  } = useSmartAccountContext();
+
+  const socket = useRef<WebSocket | null>(null);
+  const [challenge, setChallenge] = useState<string>("");
+
+  useEffect(() => {
+    if (!smartAccount?.account?.address) {
+      return;
+    }
+    socket.current = new WebSocket('wss://port-a.kayen.io');
+
+    const address = smartAccount?.account?.address;
+
+    socket.current.addEventListener('open', (event) => {
+      const challengeRequest = {
+        reqid: 0,
+        event: 'challenge',
+        data: {
+          address,
+          name: 'UserName'
+        }
+      };
+      socket.current?.send(JSON.stringify(challengeRequest));
+    });
+
+    // Listen for messages
+    socket.current.addEventListener('message', (event) => {
+      const response = JSON.parse(event.data);
+      if (response.event === 'challenge') {
+        // Handle the challenge response
+        console.log('Challenge response:', response);
+        setChallenge(response.data.challenge);
+      }
+    });
+  }, [smartAccount?.account?.address])
+
+  useEffect(() => {
+    if (!challenge || !provider) {
+      return;
+    }
+
+    provider.getSigner().signMessage(challenge).then((signature) => {
+      console.log("Signature:", signature);
+      return signature;
+    });
+  }, [provider, challenge]);
+
   return (
     <div className="flex min-h-full flex-col bg-gray-100 gap-12 text-black p-8">
       <div className="flex w-full justify-between items-center">
@@ -35,7 +88,7 @@ export default function ETFHome() {
         </span>
         <div className="flex gap-2">
           <SearchBar placeholder="Find an ETF to buy" />
-          <Dropdown labelClassNames="bg-red-200"  list={["BTC","ETH"]}  selected={"ETH"} onSelect={() => {}} />
+          <Dropdown labelClassNames="bg-red-200" list={["BTC","ETH"]} selected={"ETH"} onSelect={() => {}} />
         </div>
       </div>
       <div className="flex gap-4 md:gap-12">

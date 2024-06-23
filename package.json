@@ -9,7 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@openware/neodax-web-sdk": "1.0.40",
+        "@openware/neodax-web-sdk": "^1.0.42",
         "@sentry/nextjs": "7.110.0",
         "@types/node": "20.6.5",
         "@types/react": "18.2.22",
